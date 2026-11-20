@@ -73,9 +73,13 @@ Trong **hPanel** (bảng điều khiển Hostinger):
    | Framework | Express (hoặc "Other") |
    | Node.js version | 20 hoặc 22 |
    | Branch | `main` |
+   | Root directory | **để trống** hoặc `./` (gốc repo, nơi có `package.json`). **Không** điền `website`, `/public_html` hay thư mục con nào khác |
    | Entry file | `server.js` |
-   | Install / Build command | `npm install` |
+   | Install command | `npm install` |
+   | Build command | `npm run build` (hoặc để trống) |
    | Start command | `npm start` |
+
+   > Nếu deploy báo **"package.json file not found"**: gần như chắc chắn ô *Root directory* đang trỏ sai. Vào app → **Settings / Build configuration**, sửa *Root directory* về gốc repo rồi bấm **Redeploy**.
 4. **Environment variables**: thêm từng dòng trong `.env.example` với giá trị thật của bạn. Bắt buộc có:
    - `NODE_ENV` = `production`
    - `SITE_URL` = `https://ten-mien-cua-ban.com`

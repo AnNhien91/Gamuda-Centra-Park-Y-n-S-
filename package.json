@@ -9,6 +9,7 @@
     "node": ">=18.18"
   },
   "scripts": {
+    "build": "node -e \"console.log('Express app: không cần bước build')\"",
     "start": "node server.js",
     "dev": "node --watch server.js",
     "check": "node scripts/check.js"
