@@ -132,7 +132,10 @@ async function sendSheet(lead) {
   const text = await res.text();
   // Apps Script lỗi hoặc chưa mở quyền "Bất kỳ ai" vẫn trả HTTP 200 kèm trang HTML → chỉ coi là thành công khi nhận đúng {"ok":true}
   if (!res.ok || !/"ok"\s*:\s*true/.test(text)) {
-    const reason = text.match(/ReferenceError[^<]*|TypeError[^<]*|"error"\s*:\s*"[^"]*"/)?.[0] || text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 160);
+    const reason =
+      text.match(/>\s*((?:[A-Z]\w*Error|Exception)\s*:[^<]+)</)?.[1] || // dòng báo lỗi trên trang của Apps Script
+      text.match(/"error"\s*:\s*"[^"]*"/)?.[0] ||
+      text.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
     throw new Error(`Sheet HTTP ${res.status}: ${reason}`);
   }
   return 'sent';
