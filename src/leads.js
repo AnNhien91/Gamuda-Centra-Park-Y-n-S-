@@ -130,7 +130,11 @@ async function sendSheet(lead) {
     signal: AbortSignal.timeout(10000),
   });
   const text = await res.text();
-  if (!res.ok || /"ok"\s*:\s*false/.test(text)) throw new Error(`Sheet HTTP ${res.status}: ${text.slice(0, 120)}`);
+  // Apps Script lỗi hoặc chưa mở quyền "Bất kỳ ai" vẫn trả HTTP 200 kèm trang HTML → chỉ coi là thành công khi nhận đúng {"ok":true}
+  if (!res.ok || !/"ok"\s*:\s*true/.test(text)) {
+    const reason = text.match(/ReferenceError[^<]*|TypeError[^<]*|"error"\s*:\s*"[^"]*"/)?.[0] || text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 160);
+    throw new Error(`Sheet HTTP ${res.status}: ${reason}`);
+  }
   return 'sent';
 }
 
