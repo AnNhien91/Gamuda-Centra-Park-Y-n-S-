@@ -79,7 +79,10 @@ Trong **hPanel** (bảng điều khiển Hostinger):
    | Build command | `npm run build` (hoặc để trống) |
    | Start command | `npm start` |
 
-   > Nếu deploy báo **"package.json file not found"**: gần như chắc chắn ô *Root directory* đang trỏ sai. Vào app → **Settings / Build configuration**, sửa *Root directory* về gốc repo rồi bấm **Redeploy**.
+   > Nếu deploy báo **"package.json file not found"**:
+   > 1. Kiểm tra `package.json` có script `build` (repo này đã có). Lần deploy đầu tiên lỗi như vậy khi chưa có script này, và chạy được ngay sau khi thêm.
+   > 2. Kiểm tra ô *Root directory* trỏ đúng gốc repo (để trống hoặc `./`).
+   > 3. Vào app → **Triển khai** → **Tái triển khai**, vì lỗi đôi khi chỉ là tạm thời phía Hostinger.
 4. **Environment variables**: thêm từng dòng trong `.env.example` với giá trị thật của bạn. Bắt buộc có:
    - `NODE_ENV` = `production`
    - `SITE_URL` = `https://ten-mien-cua-ban.com`
