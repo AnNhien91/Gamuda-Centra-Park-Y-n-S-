@@ -34,12 +34,13 @@
   <div class="mobile-nav" id="mobile-nav" hidden>
     <ul>
       <% nav.forEach(([id, label], i) => { %>
-        <li style="--i:<%= i %>"><a href="<%= home %>#<%= id %>"><span class="mn-index">0<%= i + 1 %></span><%= label %></a></li>
+        <li style="--i:<%= i %>"><a href="<%= home %>#<%= id %>" data-nav="<%= id %>"><span class="mn-index">0<%= i + 1 %></span><%= label %><%- icon('chevronRight', 'mn-arrow') %></a></li>
       <% }) %>
-      <li style="--i:<%= nav.length %>"><a href="<%= home %>#lien-he"><span class="mn-index">0<%= nav.length + 1 %></span>Liên hệ</a></li>
+      <li style="--i:<%= nav.length %>"><a href="<%= home %>#lien-he" data-nav="lien-he"><span class="mn-index">0<%= nav.length + 1 %></span>Liên hệ<%- icon('chevronRight', 'mn-arrow') %></a></li>
     </ul>
     <div class="mobile-nav-foot">
       <a href="tel:<%= agent.phone %>" class="btn btn-gold btn-block" data-track="call_click"><%- icon('phone') %> Gọi <%= agent.phoneDisplay %></a>
     </div>
   </div>
 </header>
+<div class="nav-backdrop" data-nav-backdrop hidden></div>

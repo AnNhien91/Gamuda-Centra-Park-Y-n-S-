@@ -29,6 +29,8 @@
   const mobileNav = $('#mobile-nav');
   const mobileCta = $('.mobile-cta');
   const hero = $('.hero');
+  const navBackdrop = $('[data-nav-backdrop]');
+  const backTop = $('[data-back-top]');
   let lastY = window.scrollY;
 
   function onScroll() {
@@ -43,6 +45,11 @@
       const threshold = hero ? hero.offsetHeight * 0.6 : 200;
       mobileCta.classList.toggle('is-visible', y > threshold);
     }
+    if (backTop) {
+      // Hiện khi khách đã cuộn qua ~60% trang (đang xem phần cuối)
+      const maxY = document.documentElement.scrollHeight - window.innerHeight;
+      backTop.classList.toggle('is-visible', maxY > 0 && y > Math.max(window.innerHeight, maxY * 0.6));
+    }
     lastY = y;
   }
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -53,11 +60,22 @@
     navToggle.setAttribute('aria-expanded', String(open));
     navToggle.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
     mobileNav.hidden = !open;
+    if (navBackdrop) navBackdrop.hidden = !open;
     document.body.style.overflow = open ? 'hidden' : '';
+    header.classList.toggle('nav-open', open);
+    header.classList.remove('is-hidden');
     header.classList.toggle('is-scrolled', open || window.scrollY > 40);
-    if (open) mobileNav.querySelector('a')?.focus();
+    if (open) mobileNav.querySelector('a')?.focus({ preventScroll: true });
   }
   navToggle?.addEventListener('click', () => setNav(navToggle.getAttribute('aria-expanded') !== 'true'));
+  navBackdrop?.addEventListener('click', () => setNav(false));
+  window.addEventListener('resize', () => { if (window.innerWidth >= 1180 && navToggle?.getAttribute('aria-expanded') === 'true') setNav(false); });
+
+  backTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    header?.classList.remove('is-hidden');
+    $('.brand')?.focus({ preventScroll: true });
+  });
   mobileNav?.addEventListener('click', (e) => { if (e.target.closest('a')) setNav(false); });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && navToggle?.getAttribute('aria-expanded') === 'true') { setNav(false); navToggle.focus(); }
