@@ -1,0 +1,515 @@
+<%
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'ApartmentComplex',
+        name: 'Gamuda Central Park Yên Sở',
+        description: site.description,
+        url: site.url,
+        image: site.url + '/images/og-image.jpg',
+        numberOfAccommodationUnits: 2605,
+        address: { '@type': 'PostalAddress', streetAddress: 'Lô HH2, Gamuda City, Km1.5 Pháp Vân', addressLocality: 'Hoàng Mai', addressRegion: 'Hà Nội', addressCountry: 'VN' },
+        geo: { '@type': 'GeoCoordinates', latitude: 20.9696, longitude: 105.8683 },
+      },
+      {
+        '@type': 'RealEstateAgent',
+        name: agent.name,
+        description: agent.title,
+        telephone: agent.phone,
+        email: agent.email,
+        url: site.url,
+        areaServed: 'Hà Nội',
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: project.faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+      },
+    ],
+  };
+  const heroSlides = [
+    { name: 'aerial-lake', alt: 'Phối cảnh 3 tòa tháp Gamuda Central Park bên hồ Yên Sở nhìn từ trên cao' },
+    { name: 'tower-sunset', alt: 'Tòa tháp Gamuda Central Park lúc hoàng hôn nhìn ra hồ' },
+    { name: 'lakeside-dusk', alt: 'Dự án Gamuda Central Park nhìn từ mặt hồ lúc chạng vạng' },
+  ];
+  const distIcons = ['trees', 'school', 'route', 'car', 'bus', 'landmark'];
+  const groupIcons = { water: 'waves', green: 'trees', play: 'sparkle', other: 'building' };
+  const fmt = n => n.toLocaleString('vi-VN');
+  // Kích thước ảnh thu nhỏ có sẵn trong /public/images
+  const thumbW = name => ['aerial-lake', 'lakeside-dusk', 'tower-sunset', 'aerial-clouds', 'aerial-towers'].includes(name) ? 960
+    : ['pool-infinity', 'garden-towers'].includes(name) ? null : 800;
+%>
+<%- include('partials/head', { schema, preloadHero: true, bodyClass: 'home' }) %>
+<%- include('partials/header') %>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-label="Giới thiệu dự án">
+    <div class="hero-slides" data-hero>
+      <% heroSlides.forEach((s, i) => { %>
+        <div class="hero-slide <%= i === 0 ? 'is-active' : '' %>">
+          <img src="<%= img(s.name, 960) %>" srcset="<%= img(s.name, 960) %> 960w, <%= img(s.name) %> 1920w" sizes="100vw"
+               alt="<%= s.alt %>" width="1920" height="1080" <%- i === 0 ? 'fetchpriority="high"' : 'loading="lazy"' %> decoding="async">
+        </div>
+      <% }) %>
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+
+    <div class="container hero-content">
+      <p class="eyebrow eyebrow-light reveal">Gamuda City · Hoàng Mai · Hà Nội</p>
+      <h1 class="hero-title reveal" style="--d:.1s">
+        Sống giữa <em>công viên</em>,<br>thức dậy bên <em>hồ Yên Sở</em>
+      </h1>
+      <p class="hero-sub reveal" style="--d:.2s">
+        Gamuda Central Park — 3 tòa tháp 40 tầng, 2.605 căn hộ từ Studio đến Sky Villa, mật độ xây dựng chỉ 20,5%, do Gamuda Land (Malaysia) phát triển.
+      </p>
+      <div class="hero-ctas reveal" style="--d:.3s">
+        <button class="btn btn-gold btn-lg" type="button" data-open-lead="hero">Nhận bảng giá & ưu đãi <%- icon('arrowRight') %></button>
+        <a class="btn btn-ghost-light btn-lg" href="#can-ho">Xem mặt bằng căn hộ</a>
+      </div>
+      <ul class="hero-badges reveal" style="--d:.4s">
+        <% project.milestones.forEach(m => { %><li><span><%= m.label %></span><strong><%= m.value %></strong></li><% }) %>
+      </ul>
+    </div>
+
+    <div class="hero-controls container">
+      <div class="hero-dots" role="tablist" aria-label="Chọn ảnh">
+        <% heroSlides.forEach((s, i) => { %>
+          <button type="button" role="tab" aria-selected="<%= i === 0 %>" aria-label="Ảnh <%= i + 1 %>" data-hero-dot="<%= i %>"><span></span></button>
+        <% }) %>
+      </div>
+      <a class="scroll-cue" href="#tong-quan" aria-label="Cuộn xuống phần tổng quan"><span>Khám phá</span><%- icon('arrowDown') %></a>
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats" aria-label="Số liệu nổi bật">
+    <div class="container stats-grid">
+      <% project.stats.forEach(s => { %>
+        <div class="stat reveal">
+          <p class="stat-value"><span data-count="<%= s.value %>" data-decimals="<%= s.decimals || 0 %>" data-format="<%= s.format ? 1 : 0 %>"><%= s.format ? fmt(s.value) : String(s.value).replace('.', ',') %></span><small><%= s.suffix %></small></p>
+          <p class="stat-label"><%= s.label %></p>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ============ TỔNG QUAN ============ -->
+  <section class="section overview" id="tong-quan" aria-labelledby="ov-title">
+    <div class="container overview-grid">
+      <div class="overview-text">
+        <p class="eyebrow reveal">01 — Tổng quan dự án</p>
+        <h2 class="section-title reveal" id="ov-title">Trái tim xanh của <em>Gamuda City</em></h2>
+        <p class="lead reveal">
+          Gamuda Central Park (tên cũ Central Residence) là quần thể căn hộ cao tầng nằm trọn trong không gian xanh của công viên Yên Sở — nơi mỗi ô cửa đều mở ra mặt hồ, rặng cây và bầu trời phía Nam Thủ đô.
+        </p>
+        <p class="reveal">
+          Với mật độ xây dựng chỉ 20,5%, phần lớn quỹ đất được dành cho cảnh quan, sân vườn và hơn 40 tiện ích nội khu. Khối đế được phân tầng rõ ràng: phố thương mại ở tầng 1, đỗ xe đủ 1 chỗ cho mỗi căn và “tầng tiện ích” cộng đồng trên cao.
+        </p>
+        <dl class="facts reveal">
+          <% project.facts.forEach(f => { %>
+            <div class="fact"><dt><%= f.label %></dt><dd><%= f.value %></dd></div>
+          <% }) %>
+        </dl>
+      </div>
+      <div class="overview-media">
+        <figure class="ov-img ov-img-main reveal">
+          <img src="<%= img('upshot-dusk', 800) %>" srcset="<%= img('upshot-dusk', 800) %> 800w, <%= img('upshot-dusk') %> 1600w" sizes="(min-width: 960px) 45vw, 100vw" alt="Khối đế phủ xanh và 3 tòa tháp Gamuda Central Park lúc chạng vạng" width="1600" height="1066" loading="lazy" decoding="async">
+        </figure>
+        <figure class="ov-img ov-img-sub reveal" style="--d:.15s">
+          <img src="<%= img('garden-towers') %>" alt="Vườn cảnh quan nội khu bên hồ" width="1000" height="563" loading="lazy" decoding="async">
+        </figure>
+        <div class="ov-badge reveal" style="--d:.25s">
+          <span class="ov-badge-num">20,5<small>%</small></span>
+          <span class="ov-badge-text">mật độ xây dựng — phần lớn quỹ đất dành cho cảnh quan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container zones" aria-labelledby="zone-title">
+      <div class="zones-head">
+        <h3 class="sub-title reveal" id="zone-title">Phân khu chức năng</h3>
+        <p class="reveal">Mỗi tầng một vai trò, tách bạch luồng cư dân, thương mại và xe cộ.</p>
+      </div>
+      <ol class="zone-list">
+        <% project.zones.forEach((z, i) => { %>
+          <li class="zone zone-<%= z.id %> reveal" style="--d:<%= i * 0.08 %>s">
+            <div class="zone-level">
+              <span class="zone-icon"><%- icon(z.icon) %></span>
+              <p class="zone-floor"><%= z.level %></p>
+            </div>
+            <div class="zone-body">
+              <h4 class="zone-title"><%= z.title %></h4>
+              <p class="zone-text"><%= z.text %></p>
+              <ul class="zone-tags">
+                <% z.items.forEach(it => { %><li><%= it %></li><% }) %>
+              </ul>
+            </div>
+          </li>
+        <% }) %>
+      </ol>
+    </div>
+
+    <div class="container">
+      <ol class="timeline reveal" aria-label="Lộ trình dự án">
+        <% project.timeline.forEach((t, i) => { %>
+          <li class="tl-item <%= t.done ? 'is-done' : '' %>">
+            <span class="tl-dot" aria-hidden="true"></span>
+            <p class="tl-date"><%= t.date %></p>
+            <p class="tl-title"><%= t.title %></p>
+            <p class="tl-text"><%= t.text %></p>
+          </li>
+        <% }) %>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ VỊ TRÍ ============ -->
+  <section class="section location dark" id="vi-tri" aria-labelledby="loc-title">
+    <div class="location-banner">
+      <img src="<%= img('aerial-clouds', 960) %>" srcset="<%= img('aerial-clouds', 960) %> 960w, <%= img('aerial-clouds') %> 1920w" sizes="100vw" alt="Gamuda Central Park giữa quần thể hồ và công viên Yên Sở nhìn từ trên cao" width="1920" height="1080" loading="lazy" decoding="async" data-parallax>
+      <div class="location-banner-text container">
+        <p class="eyebrow eyebrow-light reveal">02 — Vị trí & kết nối</p>
+        <h2 class="section-title light reveal" id="loc-title">Cửa ngõ phía Nam,<br><em>giữa lòng công viên</em></h2>
+      </div>
+    </div>
+    <div class="container location-grid">
+      <div class="location-info">
+        <p class="lead light reveal">
+          Tọa lạc tại Lô HH2 khu đô thị Gamuda City, Km1.5 đường Pháp Vân — sát nút giao Pháp Vân – Cầu Giẽ và Vành đai 3, kết nối nhanh vào trung tâm qua Giải Phóng, Tam Trinh và Quốc lộ 1A.
+        </p>
+        <ul class="distances">
+          <% project.location.distances.forEach((d, i) => { %>
+            <li class="distance reveal" style="--d:<%= i * 0.05 %>s">
+              <span class="distance-icon"><%- icon(distIcons[i] || 'map') %></span>
+              <span class="distance-place"><%= d.place %><small><%= d.note %></small></span>
+              <span class="distance-time"><%= d.time %></span>
+            </li>
+          <% }) %>
+        </ul>
+        <p class="note light">Thời gian di chuyển mang tính tham khảo, tùy điều kiện giao thông.</p>
+      </div>
+      <div class="location-map reveal">
+        <div class="map-frame" data-map data-src="https://www.google.com/maps?q=<%= encodeURIComponent(project.location.mapQuery) %>&z=14&output=embed">
+          <img src="<%= img('aerial-towers', 960) %>" alt="" width="960" height="640" loading="lazy" aria-hidden="true">
+          <button class="btn btn-gold" type="button" data-map-load><%- icon('map') %> Xem bản đồ Google Maps</button>
+        </div>
+        <p class="map-address"><%- icon('map') %> <%= project.location.address %></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIỆN ÍCH ============ -->
+  <section class="section amenities" id="tien-ich" aria-labelledby="am-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow reveal">03 — Tiện ích</p>
+        <h2 class="section-title reveal" id="am-title">Hơn <em>40 tiện ích</em> nội khu<br>như một khu nghỉ dưỡng</h2>
+        <p class="section-intro reveal">Bể bơi vô cực, vườn sinh thái, đường chạy bộ, sân thể thao và quảng trường sự kiện — tất cả nằm ngay dưới chân tòa tháp, khép kín và an ninh.</p>
+      </div>
+
+      <div class="am-highlights">
+        <% project.amenityHighlights.forEach((a, i) => { %>
+          <figure class="am-card reveal" style="--d:<%= i * 0.08 %>s">
+            <div class="am-card-img">
+              <img src="<%= img(a.image, 800) %>" alt="<%= a.title %> – Gamuda Central Park" width="800" height="450" loading="lazy" decoding="async">
+            </div>
+            <figcaption>
+              <span class="am-index">0<%= i + 1 %></span>
+              <h3 class="am-title"><%= a.title %></h3>
+              <p><%= a.text %></p>
+            </figcaption>
+          </figure>
+        <% }) %>
+      </div>
+
+      <div class="am-map-block">
+        <div class="am-map-head">
+          <h3 class="sub-title reveal">Bản đồ tiện ích</h3>
+          <div class="chips" role="tablist" aria-label="Nhóm tiện ích">
+            <% project.amenityGroups.forEach((g, i) => { %>
+              <button class="chip chip-<%= g.color %> <%= i === 0 ? 'is-active' : '' %>" type="button" role="tab" id="amtab-<%= g.id %>" aria-selected="<%= i === 0 %>" aria-controls="ampanel-<%= g.id %>" data-tab-group="amenity" data-tab="<%= g.id %>">
+                <%- icon(groupIcons[g.color]) %><%= g.name %> <span class="chip-count"><%= g.items.length %></span>
+              </button>
+            <% }) %>
+          </div>
+        </div>
+        <div class="am-map-grid">
+          <button class="am-map-img reveal" type="button" data-lightbox="amenity-map" data-src="/images/amenity-map.webp" data-caption="Bản đồ tiện ích Gamuda Central Park" aria-label="Phóng to bản đồ tiện ích">
+            <img src="<%= img('amenity-map', 1200) %>" alt="Bản đồ tiện ích tổng thể 3 tòa A, B, C" width="1200" height="546" loading="lazy" decoding="async">
+            <span class="zoom-hint"><%- icon('maximize') %> Phóng to</span>
+          </button>
+          <div class="am-lists">
+            <% let n = 0; project.amenityGroups.forEach((g, i) => { %>
+              <ol class="am-list am-list-<%= g.color %>" id="ampanel-<%= g.id %>" role="tabpanel" aria-labelledby="amtab-<%= g.id %>" data-panel-group="amenity" data-panel="<%= g.id %>" start="<%= n + 1 %>" <%= i === 0 ? '' : 'hidden' %>>
+                <% g.items.forEach(it => { n++; %><li><span class="am-num"><%= String(n).padStart(2, '0') %></span><%= it %></li><% }) %>
+              </ol>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TÒA THÁP ============ -->
+  <section class="section towers dark" id="toa-thap" aria-labelledby="tw-title">
+    <div class="container">
+      <div class="section-head section-head-split">
+        <div>
+          <p class="eyebrow eyebrow-light reveal">04 — Ba tòa tháp</p>
+          <h2 class="section-title light reveal" id="tw-title"><em>Arden</em> · <em>Brighton</em> · <em>Claremont</em></h2>
+        </div>
+        <p class="section-intro light reveal">Mỗi tòa cao 40 tầng với 12 thang máy và 1 thang hàng, sảnh đón riêng mang phong cách khách sạn, mặt đứng phủ xanh đặc trưng của Gamuda Land.</p>
+      </div>
+
+      <div class="tabs tower-tabs" role="tablist" aria-label="Chọn tòa tháp">
+        <% project.towers.forEach((t, i) => { %>
+          <button class="tab <%= i === 0 ? 'is-active' : '' %>" type="button" role="tab" id="twtab-<%= t.id %>" aria-selected="<%= i === 0 %>" aria-controls="twpanel-<%= t.id %>" data-tab-group="tower" data-tab="<%= t.id %>">
+            <span class="tab-code"><%= t.code %></span><span class="tab-name"><%= t.name %></span>
+          </button>
+        <% }) %>
+      </div>
+
+      <% project.towers.forEach((t, i) => { %>
+        <article class="tower-panel" id="twpanel-<%= t.id %>" role="tabpanel" aria-labelledby="twtab-<%= t.id %>" data-panel-group="tower" data-panel="<%= t.id %>" <%= i === 0 ? '' : 'hidden' %>>
+          <div class="tower-media">
+            <img src="<%= img(t.image, 800) %>" srcset="<%= img(t.image, 800) %> 800w, <%= img(t.image) %> 1600w" sizes="(min-width: 960px) 55vw, 100vw" alt="Sảnh tòa <%= t.name %> – Gamuda Central Park" width="1600" height="1066" loading="lazy" decoding="async">
+            <span class="tower-tag"><%= t.code %> · <%= t.name %></span>
+          </div>
+          <div class="tower-info">
+            <h3 class="tower-name"><%= t.name %></h3>
+            <div class="tower-kpis">
+              <div><strong><%= fmt(t.units) %></strong><span>căn hộ</span></div>
+              <div><strong><%= t.perFloor %></strong><span>căn / sàn</span></div>
+              <div><strong>40</strong><span>tầng</span></div>
+            </div>
+            <table class="mix-table">
+              <caption class="sr-only">Cơ cấu căn hộ tòa <%= t.name %></caption>
+              <thead><tr><th scope="col">Loại căn</th><th scope="col">Diện tích</th><th scope="col">Số căn</th></tr></thead>
+              <tbody>
+                <% t.mix.forEach(m => { %><tr><th scope="row"><%= m.type %></th><td><%= m.area %></td><td><%= m.count %></td></tr><% }) %>
+              </tbody>
+            </table>
+            <p class="tower-meta"><%= t.lifts %> · <%= t.floors %></p>
+            <div class="tower-actions">
+              <button class="btn btn-ghost-light" type="button" data-lightbox="floor-<%= t.id %>" data-src="<%= img(t.plan) %>" data-caption="<%= t.code %> <%= t.name %> – <%= t.floors %>"><%- icon('maximize') %> Mặt bằng tầng điển hình</button>
+              <button class="btn btn-gold" type="button" data-open-lead="tower_<%= t.id %>">Nhận giá tòa <%= t.name %></button>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ============ CĂN HỘ ============ -->
+  <section class="section units" id="can-ho" aria-labelledby="un-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow reveal">05 — Thiết kế căn hộ</p>
+        <h2 class="section-title reveal" id="un-title">Không gian sống <em>được may đo</em></h2>
+        <p class="section-intro reveal">Từ Studio tối ưu cho người trẻ đến căn 3 phòng ngủ cho gia đình đa thế hệ — mọi căn đều có ban công, ánh sáng tự nhiên và tầm nhìn xanh.</p>
+      </div>
+
+      <div class="units-layout">
+        <div class="unit-list" role="tablist" aria-label="Chọn loại căn hộ" aria-orientation="vertical">
+          <% project.units.forEach((u, i) => { %>
+            <button class="unit-tab <%= i === 0 ? 'is-active' : '' %>" type="button" role="tab" id="untab-<%= u.id %>" aria-selected="<%= i === 0 %>" aria-controls="unpanel-<%= u.id %>" data-tab-group="unit" data-tab="<%= u.id %>">
+              <span class="unit-tab-name"><%= u.name %></span>
+              <span class="unit-tab-area"><%= u.area %></span>
+            </button>
+          <% }) %>
+          <p class="unit-premium"><%- icon('sparkle') %> <%= project.premiumUnits %></p>
+        </div>
+
+        <% project.units.forEach((u, i) => { %>
+          <article class="unit-panel" id="unpanel-<%= u.id %>" role="tabpanel" aria-labelledby="untab-<%= u.id %>" data-panel-group="unit" data-panel="<%= u.id %>" <%= i === 0 ? '' : 'hidden' %>>
+            <div class="unit-visual">
+              <div class="seg" role="group" aria-label="Chế độ xem mặt bằng">
+                <button type="button" class="seg-btn is-active" data-view="3d" aria-pressed="true">Phối cảnh 3D</button>
+                <button type="button" class="seg-btn" data-view="2d" aria-pressed="false">Mặt bằng 2D</button>
+              </div>
+              <button class="unit-img" type="button" data-lightbox="unit-<%= u.id %>" data-src="<%= img(u.image) %>" data-caption="Căn <%= u.name %> – <%= u.area %>" aria-label="Phóng to mặt bằng căn <%= u.name %>">
+                <img class="v-3d" src="<%= img(u.image) %>" alt="Phối cảnh 3D căn <%= u.name %> diện tích <%= u.area %>" width="848" height="1217" loading="lazy" decoding="async">
+                <img class="v-2d" src="<%= img(u.plan2d) %>" alt="Mặt bằng 2D căn <%= u.name %>" width="1560" height="1008" loading="lazy" decoding="async" hidden>
+                <span class="zoom-hint"><%- icon('maximize') %> Phóng to</span>
+              </button>
+            </div>
+            <div class="unit-info">
+              <p class="eyebrow">Căn hộ</p>
+              <h3 class="unit-name"><%= u.name %></h3>
+              <p class="unit-area"><%- icon('ruler') %> Diện tích <strong><%= u.area %></strong></p>
+              <ul class="unit-rooms">
+                <% u.rooms.forEach(r => { %><li><%- icon('check') %><%= r %></li><% }) %>
+              </ul>
+              <p class="unit-fit"><span>Phù hợp</span><%= u.fit %></p>
+              <button class="btn btn-dark btn-block" type="button" data-open-lead="unit_<%= u.id %>">Nhận mặt bằng & giá căn <%= u.name %> <%- icon('arrowRight') %></button>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHÍNH SÁCH ============ -->
+  <section class="section policy dark" id="chinh-sach" aria-labelledby="po-title">
+    <div class="container">
+      <div class="section-head section-head-split">
+        <div>
+          <p class="eyebrow eyebrow-light reveal">06 — Chính sách bán hàng <span class="tag-soft">Dự kiến</span></p>
+          <h2 class="section-title light reveal" id="po-title"><em>4 phương án</em><br>thanh toán linh hoạt</h2>
+        </div>
+        <p class="section-intro light reveal">Chọn tiến độ phù hợp dòng tiền: thanh toán nhanh nhận chiết khấu tới 7%, hoặc chỉ cần 30% vốn tự có với gói hỗ trợ lãi suất 24 tháng.</p>
+      </div>
+
+      <div class="plan-tabs" role="tablist" aria-label="Phương án thanh toán">
+        <% project.paymentPlans.forEach((p, i) => { %>
+          <button class="plan-tab <%= i === 0 ? 'is-active' : '' %>" type="button" role="tab" id="potab-<%= p.id %>" aria-selected="<%= i === 0 %>" aria-controls="popanel-<%= p.id %>" data-tab-group="plan" data-tab="<%= p.id %>">
+            <span class="plan-tab-badge"><%= p.discountLabel || 'Chiết khấu' %> <strong><%= p.discount %></strong></span>
+            <span class="plan-tab-name"><%= p.name %></span>
+            <span class="plan-tab-en"><%= p.en %></span>
+          </button>
+        <% }) %>
+      </div>
+
+      <% project.paymentPlans.forEach((p, i) => { %>
+        <div class="plan-panel" id="popanel-<%= p.id %>" role="tabpanel" aria-labelledby="potab-<%= p.id %>" data-panel-group="plan" data-panel="<%= p.id %>" <%= i === 0 ? '' : 'hidden' %>>
+          <p class="plan-summary"><%= p.summary %></p>
+          <ol class="pay-track" style="--n:<%= p.steps.length %>">
+            <% p.steps.forEach(s => { %>
+              <li class="pay-step <%= s.label ? 'is-key' : '' %>">
+                <span class="pay-pct"><%= s.pct %><small>%</small></span>
+                <span class="pay-dot" aria-hidden="true"></span>
+                <span class="pay-date"><%= s.date %></span>
+                <% if (s.label) { %><span class="pay-label"><%= s.label %></span><% } %>
+                <% if (s.bank !== undefined || s.own !== undefined) { %>
+                  <span class="pay-split"><% if (s.own) { %><i class="own">KH <%= s.own %>%</i><% } %><% if (s.bank) { %><i class="bank">NH <%= s.bank %>%</i><% } %></span>
+                <% } %>
+              </li>
+            <% }) %>
+          </ol>
+        </div>
+      <% }) %>
+
+      <div class="calc reveal" aria-labelledby="calc-title">
+        <div class="calc-head">
+          <span class="calc-icon"><%- icon('calculator') %></span>
+          <div>
+            <h3 class="calc-title" id="calc-title">Dự tính dòng tiền</h3>
+            <p class="calc-sub">Nhập giá trị căn hộ để xem số tiền từng đợt theo phương án đang chọn.</p>
+          </div>
+        </div>
+        <div class="calc-body">
+          <div class="calc-input">
+            <label for="calc-price">Giá trị căn hộ (tỷ đồng)</label>
+            <div class="calc-field">
+              <input id="calc-price" type="number" inputmode="decimal" min="1" max="50" step="0.1" value="5" data-calc-price>
+              <span>tỷ</span>
+            </div>
+            <input type="range" min="1.5" max="15" step="0.1" value="5" aria-label="Kéo để chọn giá trị căn hộ" data-calc-range>
+            <dl class="calc-summary" data-calc-summary></dl>
+          </div>
+          <div class="calc-table-wrap">
+            <table class="calc-table" data-calc-table>
+              <caption class="sr-only">Lịch thanh toán dự tính</caption>
+              <thead><tr><th scope="col">Đợt</th><th scope="col">Thời điểm</th><th scope="col">Tỷ lệ</th><th scope="col">Số tiền</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="note light">Bảng tính minh họa dựa trên chính sách dự kiến, chưa gồm VAT, phí bảo trì và các ưu đãi khác. Chính sách chính thức theo công bố của Chủ đầu tư.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THƯ VIỆN ============ -->
+  <section class="section gallery" id="thu-vien" aria-labelledby="ga-title">
+    <div class="container">
+      <div class="section-head section-head-split">
+        <div>
+          <p class="eyebrow reveal">07 — Thư viện</p>
+          <h2 class="section-title reveal" id="ga-title">Hình ảnh <em>phối cảnh</em> dự án</h2>
+        </div>
+        <div class="chips" role="group" aria-label="Lọc ảnh">
+          <button class="chip is-active" type="button" data-filter="all" aria-pressed="true">Tất cả</button>
+          <button class="chip" type="button" data-filter="phoi-canh" aria-pressed="false">Phối cảnh</button>
+          <button class="chip" type="button" data-filter="tien-ich" aria-pressed="false">Tiện ích</button>
+          <button class="chip" type="button" data-filter="noi-that" aria-pressed="false">Sảnh & nội thất</button>
+        </div>
+      </div>
+      <div class="masonry" data-gallery>
+        <% project.gallery.forEach((g, i) => { %>
+          <button class="masonry-item reveal" type="button" data-cat="<%= g.cat %>" data-lightbox="gallery" data-src="<%= img(g.src) %>" data-caption="<%= g.caption %>" aria-label="Xem ảnh: <%= g.caption %>">
+            <img src="<%= img(g.src, thumbW(g.src)) %>" alt="<%= g.caption %>" loading="lazy" decoding="async" width="800" height="<%= i % 3 === 1 ? 533 : 450 %>">
+            <span class="masonry-cap"><%= g.caption %></span>
+          </button>
+        <% }) %>
+      </div>
+      <p class="note">Hình ảnh mang tính minh họa, có thể thay đổi theo thiết kế được phê duyệt.</p>
+    </div>
+  </section>
+
+  <!-- ============ LIÊN HỆ ============ -->
+  <section class="section contact" id="lien-he" aria-labelledby="ct-title">
+    <div class="contact-bg" aria-hidden="true">
+      <img src="<%= img('lakeside-dusk', 960) %>" srcset="<%= img('lakeside-dusk', 960) %> 960w, <%= img('lakeside-dusk') %> 1920w" sizes="100vw" alt="" loading="lazy" width="1920" height="1280">
+    </div>
+    <div class="container contact-grid">
+      <div class="contact-info">
+        <p class="eyebrow eyebrow-light reveal">08 — Liên hệ tư vấn</p>
+        <h2 class="section-title light reveal" id="ct-title">Sở hữu căn hộ <em>view hồ</em><br>ngay từ giai đoạn đầu</h2>
+        <ul class="perks reveal">
+          <li><%- icon('check') %> Bảng giá & giỏ hàng cập nhật trực tiếp từ Chủ đầu tư</li>
+          <li><%- icon('check') %> Tư vấn chọn tầng, hướng, căn view hồ đẹp nhất</li>
+          <li><%- icon('check') %> Hỗ trợ thủ tục vay ngân hàng tới 70%</li>
+          <li><%- icon('check') %> Đưa đón tham quan dự án & nhà mẫu miễn phí</li>
+        </ul>
+        <div class="agent-card reveal">
+          <div class="agent-photo">
+            <% if (agent.portrait || agent.photo) { %>
+              <img src="<%= agent.portrait || agent.photo %>" alt="Chân dung <%= agent.name %>" width="640" height="800" loading="lazy" decoding="async">
+            <% } else { %>
+              <span aria-hidden="true"><%= agent.name.trim().split(/\s+/).slice(-1)[0].charAt(0) %></span>
+            <% } %>
+          </div>
+          <div class="agent-meta">
+            <p class="agent-kicker">Chuyên viên phụ trách</p>
+            <p class="agent-name"><%= agent.name %></p>
+            <p class="agent-title"><%= agent.title %></p>
+            <div class="agent-links">
+              <a href="tel:<%= agent.phone %>" data-track="call_click"><%- icon('phone') %> <%= agent.phoneDisplay %></a>
+              <a href="https://zalo.me/<%= agent.zalo %>" target="_blank" rel="noopener" data-track="zalo_click"><span class="zalo-mini">Zalo</span> Nhắn Zalo</a>
+              <a href="mailto:<%= agent.email %>"><%- icon('mail') %> <%= agent.email %></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form-card reveal" style="--d:.1s">
+        <h3 class="form-title">Đăng ký nhận thông tin</h3>
+        <p class="form-sub">Phản hồi trong 15 phút (8:00 – 21:00)</p>
+        <%- include('partials/lead-form', { formId: 'contact', source: 'contact_section' }) %>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section faq" id="faq" aria-labelledby="faq-title">
+    <div class="container faq-grid">
+      <div>
+        <p class="eyebrow reveal">09 — Hỏi đáp</p>
+        <h2 class="section-title reveal" id="faq-title">Câu hỏi <em>thường gặp</em></h2>
+        <p class="section-intro reveal">Chưa thấy câu trả lời bạn cần? Gọi <a href="tel:<%= agent.phone %>" data-track="call_click"><%= agent.phoneDisplay %></a> để được tư vấn trực tiếp.</p>
+      </div>
+      <div class="faq-list">
+        <% project.faqs.forEach((f, i) => { %>
+          <details class="faq-item reveal" <%= i === 0 ? 'open' : '' %>>
+            <summary><span><%= f.q %></span><%- icon('plus') %></summary>
+            <div class="faq-a"><p><%= f.a %></p></div>
+          </details>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,67 @@
+<% const fid = locals.formId || 'lead'; %>
+<form class="lead-form" action="/api/lead" method="post" novalidate data-lead-form data-source="<%= locals.source || 'contact' %>">
+  <div class="field">
+    <label for="<%= fid %>-name">Họ và tên <span aria-hidden="true">*</span></label>
+    <input id="<%= fid %>-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" placeholder="Nguyễn Văn An" aria-describedby="<%= fid %>-name-err">
+    <p class="field-error" id="<%= fid %>-name-err" role="alert"></p>
+  </div>
+  <div class="field">
+    <label for="<%= fid %>-phone">Số điện thoại <span aria-hidden="true">*</span></label>
+    <input id="<%= fid %>-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="0912 345 678" aria-describedby="<%= fid %>-phone-err">
+    <p class="field-error" id="<%= fid %>-phone-err" role="alert"></p>
+  </div>
+  <% if (!locals.compact) { %>
+  <div class="field">
+    <label for="<%= fid %>-email">Email <span class="optional">(không bắt buộc)</span></label>
+    <input id="<%= fid %>-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="ban@email.com" aria-describedby="<%= fid %>-email-err">
+    <p class="field-error" id="<%= fid %>-email-err" role="alert"></p>
+  </div>
+  <% } %>
+  <div class="field-row">
+    <div class="field">
+      <label for="<%= fid %>-need">Loại căn quan tâm</label>
+      <div class="select-wrap">
+        <select id="<%= fid %>-need" name="need">
+          <option value="">Chọn loại căn</option>
+          <% needs.forEach(n => { %><option><%= n %></option><% }) %>
+        </select>
+        <%- icon('chevronDown') %>
+      </div>
+    </div>
+    <div class="field">
+      <label for="<%= fid %>-purpose">Mục đích</label>
+      <div class="select-wrap">
+        <select id="<%= fid %>-purpose" name="purpose">
+          <option value="">Chọn mục đích</option>
+          <% purposes.forEach(n => { %><option><%= n %></option><% }) %>
+        </select>
+        <%- icon('chevronDown') %>
+      </div>
+    </div>
+  </div>
+  <% if (!locals.compact) { %>
+  <div class="field">
+    <label for="<%= fid %>-message">Lời nhắn <span class="optional">(không bắt buộc)</span></label>
+    <textarea id="<%= fid %>-message" name="message" rows="3" maxlength="1000" placeholder="Ví dụ: Tôi muốn căn 2PN tầng trung, hướng hồ…"></textarea>
+  </div>
+  <% } %>
+
+  <div class="hp" aria-hidden="true">
+    <label for="<%= fid %>-website">Website</label>
+    <input id="<%= fid %>-website" name="website" type="text" tabindex="-1" autocomplete="off">
+  </div>
+  <input type="hidden" name="t" value="">
+
+  <div class="field field-check">
+    <input id="<%= fid %>-consent" name="consent" type="checkbox" required checked aria-describedby="<%= fid %>-consent-err">
+    <label for="<%= fid %>-consent">Tôi đồng ý để chuyên viên liên hệ tư vấn theo <a href="/chinh-sach-bao-mat" target="_blank" rel="noopener">chính sách bảo mật</a>.</label>
+    <p class="field-error" id="<%= fid %>-consent-err" role="alert"></p>
+  </div>
+
+  <button class="btn btn-gold btn-block btn-lg" type="submit">
+    <span class="btn-label"><%= locals.submitLabel || 'Nhận bảng giá & mặt bằng' %></span>
+    <span class="btn-spinner" aria-hidden="true"></span>
+  </button>
+  <p class="form-status" role="status" aria-live="polite"></p>
+  <p class="form-note"><%- icon('shield') %> Thông tin của bạn được bảo mật, chỉ dùng để tư vấn dự án.</p>
+</form>

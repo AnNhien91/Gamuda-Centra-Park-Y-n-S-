@@ -1,0 +1,15 @@
+<%- include('partials/head', { title: 'Cảm ơn bạn – ' + site.name, noindex: true, bodyClass: 'page page-center' }) %>
+<main id="main" class="center-page">
+  <div class="center-card">
+    <span class="center-icon"><%- icon('check') %></span>
+    <h1 class="section-title">Cảm ơn <em>bạn</em>!</h1>
+    <p class="lead">Chuyên viên <strong><%= agent.name %></strong> sẽ liên hệ trong vòng 15 phút (8:00 – 21:00). Cần gấp, bạn có thể gọi ngay:</p>
+    <p class="center-actions">
+      <a class="btn btn-gold btn-lg" href="tel:<%= agent.phone %>" data-track="call_click"><%- icon('phone') %> <%= agent.phoneDisplay %></a>
+      <a class="btn btn-dark btn-lg" href="/">Về trang chủ</a>
+    </p>
+  </div>
+</main>
+<script src="/js/main.js?v=<%= v %>" defer></script>
+</body>
+</html>

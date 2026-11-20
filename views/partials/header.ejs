@@ -1,0 +1,45 @@
+<%
+  const home = path === '/' ? '' : '/';
+  const nav = [
+    ['tong-quan', 'Tổng quan'], ['vi-tri', 'Vị trí'], ['tien-ich', 'Tiện ích'],
+    ['toa-thap', 'Tòa tháp'], ['can-ho', 'Căn hộ'], ['chinh-sach', 'Chính sách'], ['thu-vien', 'Thư viện'],
+  ];
+%>
+<header class="site-header <%= locals.solidHeader ? 'is-solid' : '' %>" data-header>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="<%= site.name %> – Trang chủ">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c-4 6-4 12 0 18 4-6 4-12 0-18Zm-9 7c-1 6 1.5 11 7 14-1-6-3.5-11-7-14Zm18 0c-3.5 3-6 8-7 14 5.5-3 8-8 7-14ZM8 30h24M12 35h16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span class="brand-text"><span class="brand-name">Central Park</span><span class="brand-sub">Gamuda City · Yên Sở</span></span>
+    </a>
+
+    <nav class="main-nav" aria-label="Điều hướng chính">
+      <ul>
+        <% nav.forEach(([id, label]) => { %>
+          <li><a href="<%= home %>#<%= id %>" data-nav="<%= id %>"><%= label %></a></li>
+        <% }) %>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a class="header-phone" href="tel:<%= agent.phone %>" data-track="call_click">
+        <%- icon('phone') %><span><%= agent.phoneDisplay %></span>
+      </a>
+      <button class="btn btn-gold btn-sm" type="button" data-open-lead="header">Nhận bảng giá</button>
+      <button class="nav-toggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-nav" data-nav-toggle>
+        <%- icon('menu', 'i-open') %><%- icon('x', 'i-close') %>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <ul>
+      <% nav.forEach(([id, label], i) => { %>
+        <li style="--i:<%= i %>"><a href="<%= home %>#<%= id %>"><span class="mn-index">0<%= i + 1 %></span><%= label %></a></li>
+      <% }) %>
+      <li style="--i:<%= nav.length %>"><a href="<%= home %>#lien-he"><span class="mn-index">0<%= nav.length + 1 %></span>Liên hệ</a></li>
+    </ul>
+    <div class="mobile-nav-foot">
+      <a href="tel:<%= agent.phone %>" class="btn btn-gold btn-block" data-track="call_click"><%- icon('phone') %> Gọi <%= agent.phoneDisplay %></a>
+    </div>
+  </div>
+</header>

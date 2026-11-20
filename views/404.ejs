@@ -1,0 +1,14 @@
+<%- include('partials/head', { title: (locals.error ? 'Có lỗi xảy ra' : 'Không tìm thấy trang') + ' – ' + site.name, noindex: true, bodyClass: 'page page-center' }) %>
+<main id="main" class="center-page">
+  <div class="center-card">
+    <p class="center-code"><%= locals.error ? '500' : '404' %></p>
+    <h1 class="section-title"><%= locals.error ? 'Có lỗi xảy ra' : 'Không tìm thấy trang' %></h1>
+    <p class="lead">Trang bạn tìm có thể đã được di chuyển. Mời bạn quay lại trang chủ hoặc gọi trực tiếp để được tư vấn.</p>
+    <p class="center-actions">
+      <a class="btn btn-dark btn-lg" href="/">Về trang chủ</a>
+      <a class="btn btn-gold btn-lg" href="tel:<%= agent.phone %>"><%- icon('phone') %> <%= agent.phoneDisplay %></a>
+    </p>
+  </div>
+</main>
+</body>
+</html>

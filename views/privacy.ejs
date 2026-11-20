@@ -1,0 +1,35 @@
+<%- include('partials/head', { title: 'Chính sách bảo mật – ' + site.name, description: 'Chính sách thu thập và bảo vệ dữ liệu cá nhân khi đăng ký nhận thông tin dự án Gamuda Central Park.', solidHeader: true, bodyClass: 'page' }) %>
+<%- include('partials/header', { solidHeader: true }) %>
+<main id="main" class="page-main">
+  <article class="container prose">
+    <p class="eyebrow">Pháp lý</p>
+    <h1 class="section-title">Chính sách <em>bảo mật</em></h1>
+    <p class="lead">Website này do <strong><%= agent.name %></strong> (<%= agent.title %>) vận hành. Chúng tôi tôn trọng và bảo vệ dữ liệu cá nhân của bạn theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân.</p>
+
+    <h2>1. Dữ liệu chúng tôi thu thập</h2>
+    <p>Khi bạn đăng ký nhận thông tin: họ tên, số điện thoại, email (nếu có), nhu cầu căn hộ và lời nhắn. Ngoài ra, hệ thống ghi nhận địa chỉ IP, trình duyệt và trang bạn gửi form nhằm chống spam.</p>
+
+    <h2>2. Mục đích sử dụng</h2>
+    <ul>
+      <li>Liên hệ tư vấn, gửi bảng giá, mặt bằng, chính sách bán hàng dự án Gamuda Central Park.</li>
+      <li>Sắp xếp lịch tham quan dự án, nhà mẫu theo yêu cầu của bạn.</li>
+      <li>Thống kê, cải thiện chất lượng website (dữ liệu ẩn danh qua Google Analytics / Meta Pixel nếu được bật).</li>
+    </ul>
+
+    <h2>3. Lưu trữ & chia sẻ</h2>
+    <p>Dữ liệu được lưu trên hệ thống email, Google Sheet và Telegram do chuyên viên quản lý. Chúng tôi <strong>không bán</strong> dữ liệu của bạn. Dữ liệu chỉ được chia sẻ với Chủ đầu tư / đơn vị phân phối chính thức khi cần thiết để thực hiện giao dịch mà bạn yêu cầu.</p>
+
+    <h2>4. Quyền của bạn</h2>
+    <p>Bạn có quyền yêu cầu xem, chỉnh sửa hoặc xóa dữ liệu cá nhân, và rút lại sự đồng ý bất kỳ lúc nào bằng cách liên hệ <a href="mailto:<%= agent.email %>"><%= agent.email %></a> hoặc <a href="tel:<%= agent.phone %>"><%= agent.phoneDisplay %></a>. Yêu cầu được xử lý trong vòng 72 giờ.</p>
+
+    <h2>5. Thời gian lưu trữ</h2>
+    <p>Dữ liệu được lưu tối đa 24 tháng kể từ lần liên hệ cuối, hoặc đến khi bạn yêu cầu xóa.</p>
+
+    <h2>6. Tuyên bố miễn trừ</h2>
+    <p><%= project.disclaimer %></p>
+
+    <p class="note">Cập nhật lần cuối: <%= new Date().toLocaleDateString('vi-VN') %></p>
+    <p><a class="btn btn-dark" href="/">← Về trang chủ</a></p>
+  </article>
+</main>
+<%- include('partials/footer') %>

@@ -1,0 +1,93 @@
+<% const home = path === '/' ? '' : '/'; %>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="/">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c-4 6-4 12 0 18 4-6 4-12 0-18Zm-9 7c-1 6 1.5 11 7 14-1-6-3.5-11-7-14Zm18 0c-3.5 3-6 8-7 14 5.5-3 8-8 7-14ZM8 30h24M12 35h16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span class="brand-text"><span class="brand-name">Central Park</span><span class="brand-sub">Gamuda City · Yên Sở</span></span>
+        </a>
+        <p class="footer-tagline">Căn hộ view hồ giữa công viên Yên Sở, phía Nam Thủ đô.</p>
+      </div>
+      <div class="footer-col">
+        <h2 class="footer-h">Liên hệ tư vấn</h2>
+        <ul class="footer-list">
+          <li><%- icon('phone') %><a href="tel:<%= agent.phone %>" data-track="call_click"><%= agent.phoneDisplay %></a> · <%= agent.name %></li>
+          <li><%- icon('mail') %><a href="mailto:<%= agent.email %>"><%= agent.email %></a></li>
+          <li><%- icon('clock') %><span><%= agent.workingHours %></span></li>
+          <li><%- icon('map') %><span><%= project.location.address %></span></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2 class="footer-h">Khám phá</h2>
+        <ul class="footer-links">
+          <li><a href="<%= home %>#tong-quan">Tổng quan dự án</a></li>
+          <li><a href="<%= home %>#vi-tri">Vị trí & kết nối</a></li>
+          <li><a href="<%= home %>#tien-ich">Tiện ích</a></li>
+          <li><a href="<%= home %>#can-ho">Thiết kế căn hộ</a></li>
+          <li><a href="<%= home %>#chinh-sach">Chính sách bán hàng</a></li>
+          <li><a href="/chinh-sach-bao-mat">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-disclaimer"><%= project.disclaimer %></p>
+    <div class="footer-bottom">
+      <span>© <%= year %> <%= agent.name %> – Chuyên viên tư vấn độc lập.</span>
+      <a href="#main" class="to-top">Lên đầu trang <%- icon('arrowRight') %></a>
+    </div>
+  </div>
+</footer>
+
+<!-- Nút liên hệ nổi (desktop) -->
+<div class="float-contact" aria-label="Liên hệ nhanh">
+  <a class="fc-btn fc-zalo" href="https://zalo.me/<%= agent.zalo %>" target="_blank" rel="noopener" data-track="zalo_click" aria-label="Chat Zalo với chuyên viên">
+    <span class="fc-zalo-text">Zalo</span>
+  </a>
+  <a class="fc-btn fc-call" href="tel:<%= agent.phone %>" data-track="call_click" aria-label="Gọi <%= agent.phoneDisplay %>">
+    <%- icon('phone') %>
+  </a>
+</div>
+
+<!-- Thanh liên hệ dưới đáy (mobile) -->
+<nav class="mobile-cta" aria-label="Liên hệ nhanh">
+  <a href="tel:<%= agent.phone %>" data-track="call_click"><%- icon('phone') %><span>Gọi ngay</span></a>
+  <a href="https://zalo.me/<%= agent.zalo %>" target="_blank" rel="noopener" data-track="zalo_click"><span class="zalo-mini">Zalo</span><span>Nhắn Zalo</span></a>
+  <button type="button" class="mobile-cta-main" data-open-lead="mobile_bar"><span>Nhận bảng giá</span></button>
+</nav>
+
+<!-- Modal nhận báo giá -->
+<dialog class="lead-modal" id="lead-modal" aria-labelledby="lead-modal-title">
+  <div class="lead-modal-inner">
+    <button class="modal-close" type="button" data-close-modal aria-label="Đóng"><%- icon('x') %></button>
+    <div class="lead-modal-media" aria-hidden="true">
+      <img src="<%= img('tower-sunset', 960) %>" alt="" loading="lazy" width="960" height="540">
+    </div>
+    <div class="lead-modal-body">
+      <p class="eyebrow">Ưu đãi giai đoạn đầu</p>
+      <h2 id="lead-modal-title" class="modal-title">Nhận bảng giá & <em>chính sách mới nhất</em></h2>
+      <p class="modal-sub">Gửi bạn bảng giá, mặt bằng chi tiết từng tòa và phương án thanh toán phù hợp trong 15 phút.</p>
+      <div class="modal-agent">
+        <% if (agent.photo) { %><img src="<%= agent.photo %>" alt="" width="48" height="48" loading="lazy"><% } %>
+        <p><span>Tư vấn trực tiếp bởi</span><strong><%= agent.name %></strong> · <a href="tel:<%= agent.phone %>" data-track="call_click"><%= agent.phoneDisplay %></a></p>
+      </div>
+      <%- include('lead-form', { formId: 'modal', source: 'modal', compact: true }) %>
+    </div>
+  </div>
+</dialog>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh" hidden>
+  <button class="lb-close" type="button" aria-label="Đóng" data-lb-close><%- icon('x') %></button>
+  <button class="lb-nav lb-prev" type="button" aria-label="Ảnh trước" data-lb-prev><%- icon('chevronLeft') %></button>
+  <figure class="lb-figure">
+    <img alt="" class="lb-img">
+    <figcaption class="lb-caption"></figcaption>
+  </figure>
+  <button class="lb-nav lb-next" type="button" aria-label="Ảnh tiếp" data-lb-next><%- icon('chevronRight') %></button>
+  <div class="lb-count" aria-live="polite"></div>
+</div>
+
+<script>window.__SITE__ = <%- JSON.stringify({ plans: project.paymentPlans, phone: agent.phoneDisplay }) %>;</script>
+<script src="/js/main.js?v=<%= v %>" defer></script>
+</body>
+</html>
