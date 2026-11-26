@@ -273,7 +273,7 @@
       const f = document.createElement('iframe');
       f.src = box.dataset.src; f.title = 'Bản đồ vị trí dự án Gamuda Central Park';
       f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade'; f.allowFullscreen = true;
-      box.innerHTML = ''; box.appendChild(f);
+      box.innerHTML = ''; box.classList.remove('map-frame-sm'); box.appendChild(f);
       track('map_open');
     });
   });
@@ -389,10 +389,12 @@
   });
 
   /* ---------- Máy tính dòng tiền ---------- */
-  const priceInput = $('[data-calc-price]');
-  const priceRange = $('[data-calc-range]');
+  const areaInput = $('[data-calc-area]');
+  const unitInput = $('[data-calc-unit]');
+  const areaRange = $('[data-calc-range]');
   const calcTable = $('[data-calc-table] tbody');
   const calcSummary = $('[data-calc-summary]');
+  const num = (el) => Math.max(0, parseFloat(String(el?.value || '').replace(',', '.')) || 0);
 
   function money(vnd) {
     if (!isFinite(vnd) || vnd <= 0) return '—';
@@ -403,38 +405,50 @@
     const active = $('[data-tab-group="plan"].is-active');
     return DATA.plans.find((p) => p.id === active?.dataset.tab) || DATA.plans[0];
   }
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   function renderCalc() {
-    if (!calcTable || !priceInput) return;
+    if (!calcTable || !areaInput || !unitInput) return;
     const plan = currentPlan(); if (!plan) return;
-    const price = Math.max(0, parseFloat(String(priceInput.value).replace(',', '.')) || 0) * 1e9;
+    const area = num(areaInput);
+    const unit = num(unitInput); // triệu/m²
+    const price = area * unit * 1e6;
     const isLoan = plan.id === 'loan';
-    const disc = isLoan ? 0 : parseFloat(plan.discount) / 100;
-    const net = price * (1 - disc);
 
-    calcTable.innerHTML = plan.steps.map((s, i) => {
-      let detail = '';
-      if (isLoan && (s.own || s.bank)) {
-        const parts = [];
-        if (s.own) parts.push(`Khách: ${money(net * s.own / 100)}`);
-        if (s.bank) parts.push(`Ngân hàng: ${money(net * s.bank / 100)}`);
-        detail = `<span class="muted">${parts.join(' · ')}</span>`;
-      }
-      return `<tr class="${s.label ? 'row-key' : ''}"><td>${i + 1}${s.label ? ' · ' + s.label : ''}</td><td>${s.date}</td><td>${s.pct}%</td><td>${money(net * s.pct / 100)}${detail}</td></tr>`;
+    calcTable.innerHTML = plan.steps.map((s) => {
+      const parts = [];
+      if (s.note) parts.push(esc(s.note));
+      if (isLoan && s.own) parts.push(`Khách: ${money(price * s.own / 100)}`);
+      if (isLoan && s.bank) parts.push(`Ngân hàng: ${money(price * s.bank / 100)}`);
+      const detail = parts.length ? `<span class="muted">${parts.join(' · ')}</span>` : '';
+      return `<tr class="${s.key ? 'row-key' : ''}"><td>${esc(s.name)}</td><td>${esc(s.time)}</td><td>${s.pct}%</td><td>${money(price * s.pct / 100)}${detail}</td></tr>`;
     }).join('');
 
-    const rows = [['Giá trị căn hộ', money(price)]];
+    const handoverIdx = plan.steps.findIndex((s) => /bàn giao/i.test(s.name));
+    const before = plan.steps.slice(0, handoverIdx < 0 ? plan.steps.length : handoverIdx).reduce((a, s) => a + s.pct, 0);
+    const rows = [
+      ['Giá trị căn hộ (tạm tính)', money(price), true],
+      [`Thanh toán trước bàn giao (${before}%)`, money(price * before / 100)],
+    ];
     if (isLoan) {
       const own = plan.steps.reduce((a, s) => a + (s.own || 0), 0);
-      rows.push([`Vốn tự có (${own}%)`, money(net * own / 100)]);
-      rows.push([`Ngân hàng giải ngân (${100 - own}%)`, money(net * (100 - own) / 100)]);
-      rows.push(['CĐT hỗ trợ lãi suất', '24 tháng', true]);
+      const bank = plan.steps.reduce((a, s) => a + (s.bank || 0), 0);
+      rows.push([`Vốn tự có (${own}%)`, money(price * own / 100)]);
+      rows.push([`Ngân hàng giải ngân (${bank}%)`, money(price * bank / 100)]);
     } else {
-      rows.push([`Chiết khấu (từ ${plan.discount})`, '−' + money(price * disc)]);
-      rows.push(['Giá sau chiết khấu', money(net), true]);
+      const first = plan.steps[0];
+      rows.push([`Ký HĐMB (${first.pct}%)`, money(price * first.pct / 100)]);
     }
     calcSummary.innerHTML = rows.map(([k, v, strong]) => `<div class="${strong ? 'is-strong' : ''}"><dt>${k}</dt><dd>${v}</dd></div>`).join('');
   }
-  priceInput?.addEventListener('input', () => { if (priceRange) priceRange.value = priceInput.value; renderCalc(); });
-  priceRange?.addEventListener('input', () => { priceInput.value = priceRange.value; renderCalc(); });
-  renderCalc();
+  const syncArea = (v) => {
+    if (areaInput && document.activeElement !== areaInput) areaInput.value = v;
+    if (areaRange && document.activeElement !== areaRange) areaRange.value = v;
+    $$('.calc-presets [data-area]').forEach((b) => b.classList.toggle('is-active', Number(b.dataset.area) === Number(v)));
+    renderCalc();
+  };
+  areaInput?.addEventListener('input', () => syncArea(areaInput.value));
+  areaRange?.addEventListener('input', () => syncArea(areaRange.value));
+  unitInput?.addEventListener('input', renderCalc);
+  $$('.calc-presets [data-area]').forEach((b) => b.addEventListener('click', () => syncArea(b.dataset.area)));
+  syncArea(areaInput?.value || 61);
 })();

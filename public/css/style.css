@@ -355,6 +355,10 @@ dialog { padding: 0; border: 0; }
 .distance-place { display: flex; flex-direction: column; font-weight: 400; color: var(--ivory-50); }
 .distance-place small { font-size: var(--fs-xs); color: rgba(247, 243, 234, .6); font-weight: 300; }
 .distance-time { font-family: var(--font-display); font-size: 1.35rem; color: var(--gold-300); text-align: right; white-space: nowrap; }
+.loc-figure { position: relative; display: block; width: 100%; border-radius: var(--radius-lg); overflow: hidden; cursor: zoom-in; box-shadow: var(--shadow-lg); margin-bottom: var(--space-4); }
+.loc-figure img { width: 100%; transition: transform .8s var(--ease-out); }
+.loc-figure:hover img { transform: scale(1.03); }
+.map-frame.map-frame-sm { aspect-ratio: 21 / 8; }
 .map-frame { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); overflow: hidden; background: var(--forest-800); border: 1px solid var(--line-light); }
 .map-frame img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.85) brightness(.6); }
 .map-frame .btn { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
@@ -489,7 +493,25 @@ dialog { padding: 0; border: 0; }
 .plan-tab-badge strong { font-family: var(--font-display); font-size: 2rem; font-weight: 500; color: var(--gold-300); margin-left: .25rem; line-height: 1; }
 .plan-tab-name { font-family: var(--font-display); font-size: 1.45rem; line-height: 1.15; color: var(--ivory-50); }
 .plan-tab-en { font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(247, 243, 234, .5); }
-@media (min-width: 960px) { .plan-tabs { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 959px) { .plan-tab:last-child:nth-child(odd) { grid-column: span 2; } }
+@media (min-width: 960px) { .plan-tabs { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1180px) { .plan-tabs { grid-template-columns: repeat(var(--plans, 4), 1fr); } }
+.plan-tab-badge strong { font-size: 1.65rem; }
+
+/* Ưu đãi đợt 1 */
+.offers { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line-light); border-radius: var(--radius-lg); background: linear-gradient(120deg, rgba(201, 169, 110, .16), rgba(201, 169, 110, .03)); margin-bottom: var(--space-3); overflow: hidden; }
+.offer { display: flex; flex-direction: column; gap: .15rem; padding: var(--space-5) var(--space-5); }
+.offer + .offer { border-left: 1px solid var(--line-light); }
+.offer-label { font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; color: rgba(247, 243, 234, .7); }
+.offer-value { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.9rem); line-height: 1.05; color: var(--gold-300); }
+.offer-sub { font-size: var(--fs-xs); color: rgba(247, 243, 234, .6); }
+.offer-note { font-size: var(--fs-xs); color: rgba(247, 243, 234, .55); margin-bottom: var(--space-7); }
+@media (max-width: 640px) {
+  .offers { grid-template-columns: 1fr; }
+  .offer { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: .6rem; padding: var(--space-4); }
+  .offer + .offer { border-left: 0; border-top: 1px solid var(--line-light); }
+  .offer-sub { flex-basis: 100%; }
+}
 
 .plan-panel { animation: panelIn .5s var(--ease-out); padding: var(--space-6) 0 var(--space-7); }
 .plan-summary { font-size: var(--fs-lg); color: var(--gold-200); margin-bottom: var(--space-7); font-weight: 400; }
@@ -501,7 +523,11 @@ dialog { padding: 0; border: 0; }
 .pay-pct { font-family: var(--font-display); font-size: 2.2rem; color: var(--ivory-50); line-height: 1; height: 3.2rem; display: flex; align-items: flex-end; padding-bottom: .5rem; }
 .pay-pct small { font-size: .5em; margin-left: .05em; color: rgba(247, 243, 234, .7); }
 .pay-dot { position: relative; z-index: 1; width: 11px; height: 11px; transform: rotate(45deg); background: var(--ivory-100); margin-bottom: .75rem; }
-.pay-date { font-size: var(--fs-sm); color: rgba(247, 243, 234, .8); font-variant-numeric: tabular-nums; }
+.pay-name { font-size: var(--fs-sm); font-weight: 500; color: var(--ivory-50); white-space: nowrap; }
+.pay-step.is-key .pay-name { color: var(--gold-200); }
+.pay-date { font-size: var(--fs-xs); color: rgba(247, 243, 234, .7); font-variant-numeric: tabular-nums; white-space: nowrap; margin-top: .1rem; }
+.pay-note { margin-top: .3rem; font-size: .7rem; line-height: 1.35; color: var(--gold-300); max-width: 13ch; }
+.plan-foot { font-size: var(--fs-xs); color: rgba(247, 243, 234, .5); margin: var(--space-4) 0 0; }
 .pay-label { margin-top: .35rem; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; padding: .2rem .55rem; border-radius: 99px; background: rgba(201, 169, 110, .18); color: var(--gold-200); white-space: nowrap; }
 .pay-step.is-key .pay-pct { color: var(--gold-300); }
 .pay-step.is-key .pay-dot { background: var(--gold-400); box-shadow: 0 0 0 5px rgba(201, 169, 110, .2); }
@@ -521,6 +547,12 @@ dialog { padding: 0; border: 0; }
 .calc-field input { flex: 1; min-width: 0; background: none; border: 0; font-family: var(--font-display); font-size: 3rem; color: var(--ivory-50); padding: 0; outline: none; -moz-appearance: textfield; }
 .calc-field input::-webkit-outer-spin-button, .calc-field input::-webkit-inner-spin-button { -webkit-appearance: none; }
 .calc-field span { color: var(--gold-300); font-size: var(--fs-lg); }
+.calc-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+.calc-row .calc-field input { font-size: 2.4rem; }
+.calc-presets { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: var(--space-2); }
+.calc-presets button { min-height: 40px; padding: .35rem .85rem; border-radius: 99px; border: 1px solid var(--line-light); font-size: var(--fs-xs); color: rgba(247, 243, 234, .8); transition: all .2s; }
+.calc-presets button:hover { border-color: var(--gold-400); color: var(--gold-200); }
+.calc-presets button.is-active { background: var(--gold-500); border-color: var(--gold-500); color: var(--forest-950); font-weight: 500; }
 .calc-input input[type="range"] { width: 100%; accent-color: var(--gold-500); height: 44px; cursor: pointer; }
 .calc-summary { margin: var(--space-5) 0 0; display: grid; gap: 0; }
 .calc-summary div { display: flex; justify-content: space-between; gap: var(--space-4); padding: .65rem 0; border-bottom: 1px solid var(--line-light); font-size: var(--fs-sm); }
